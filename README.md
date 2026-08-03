@@ -6,7 +6,7 @@
 
 **An open standard for naming, exchanging data, and establishing interoperability between generative AI tools, agents, and applications.**
 
-Website: [aix-standard.org](https://aix-standard.org) · Contact: [aix@ubertrends.com](mailto:aix@ubertrends.com)
+Website: [aix-standard.org](https://aix-standard.org) · Contact: [aix@aix-standard.org](mailto:aix@aix-standard.org)
 
 ---
 

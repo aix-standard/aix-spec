@@ -983,6 +983,6 @@ Initial specification. Core task types: text, voice, image, video, code. Metadat
 
 ---
 
-*Apache 2.0 Licensed · [aix-standard.org](https://aix-standard.org) · [github.com/aix-standard/aix-spec](https://github.com/aix-standard/aix-spec) · [aix@ubertrends.com](mailto:aix@ubertrends.com)*
+*Apache 2.0 Licensed · [aix-standard.org](https://aix-standard.org) · [github.com/aix-standard/aix-spec](https://github.com/aix-standard/aix-spec) · [aix@aix-standard.org](mailto:aix@aix-standard.org)*
 
 *Copyright 2026 Michael Tchong, Ubertrends LLC*
