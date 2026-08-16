@@ -1,12 +1,14 @@
 # AIX — AI Interchange Standard
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Version](https://img.shields.io/badge/version-2.3-green.svg)](spec/AIX-v2.2.md)
-[![Status](https://img.shields.io/badge/status-ratified-brightgreen.svg)](spec/AIX-v2.2.md)
+[![Version](https://img.shields.io/badge/version-2.4-green.svg)](spec/AIX-Standard.md)
+[![Status](https://img.shields.io/badge/status-ratified-brightgreen.svg)](spec/AIX-Standard.md)
 
 **An open standard for naming, exchanging data, and establishing interoperability between generative AI tools, agents, and applications.**
 
 Website: [aix-standard.org](https://aix-standard.org) · Contact: [aix@aix-standard.org](mailto:aix@aix-standard.org)
+
+> **Mirror policy:** The canonical AIX repository is authoritative; this public copy is generated from it with unreachable internal citations removed deliberately and must not be synchronized back into the canonical source.
 
 ---
 
@@ -30,7 +32,7 @@ Every AIX message wraps in a standard envelope:
 
 ```json
 {
-  "aix": "2.2",
+  "aix": "2.4",
   "id": "uuid-v4",
   "timestamp": "2026-05-01T09:00:00Z",
   "task": { "type": "content_authoring", "provider": "anthropic", "model": "claude-sonnet-4-6" },
@@ -50,34 +52,39 @@ All AIX field keys use **camelCase** and a **four-part hierarchy**:
 writingAgent_format_newsletter_systemPrompt
 researchAgent_qualityPass_hallucinationSweep_systemPrompt
 personaAgent_voice_brand
-publishingModule_emailStudio_studioJson
+publishingModule_newsletterStudio_studioJson
 ```
 
 ---
 
 ## Specification
 
+> **Companion specification:** The UMA 3.0 companion specification is maintained separately and is available on request.
+
+AIX is one standard with one version — there is no separately-versioned envelope standard and a separate content or registry standard carrying its own number. Every surface that stamps an AIX version moves together when the version changes. Prior versions below are a historical record of what was ratified at each point; their descriptions are not rewritten as later versions supersede them.
+
 | Version | Status | Date | Summary |
 | --- | --- | --- | --- |
-| [v2.3](spec/aix-2.3-canonical-registry-contract.md) | Ratified | August 2026 | Canonical Registry Contract addendum — capability, tier, lifetime, resource-scope, and obligations axes for scoped agent reads; grant tuple; audit contract; cross-agent handoff fix. Additive — does not modify v2.2's naming/envelope rules. |
-| [v2.2](spec/AIX-v2.2.md) | Ratified | May 2026 | Module manifest standard, `format` replaces `documentType`, Published Works registry, UMA Platform keys |
+| [v2.4](spec/AIX-Standard.md) | Ratified | August 2026 | Converges AIX Standard v2.2, the AIX 2.3 Canonical Registry Contract, and the UMA 3.0 Contract Meta-Framework's key families into one document, one standard, one version — supersedes v2.2 and v2.3's two-standards framing (both physically inlined here). Module Manifest Standard promoted to its own chapter; Canonical Registry Contract and UMA 3.0 Primitive Contract Structure added as new chapters. |
+| [v2.3](spec/aix-2.3-canonical-registry-contract.md) | Ratified | August 2026 | Canonical Registry Contract addendum — capability, tier, lifetime, resource-scope, and obligations axes for scoped agent reads; grant tuple; audit contract; cross-agent handoff fix, additive at the time — did not modify v2.2's naming/envelope rules. **Superseded by v2.4**, which physically inlines this contract as chapter 12. |
+| [v2.2](spec/AIX-v2.2.md) | Ratified | May 2026 | Module manifest standard, `format` replaces `documentType`, Published Works registry, UMA Platform keys. **Superseded by v2.4**, which physically inlines this document. |
 | [v2.1](spec/AIX-v2.1.md) | Draft | April 2026 | Media Collections, Agent Behavioral Modes, Soul Documents |
 | [v2.0](spec/AIX-v2.0.md) | Draft | March 2026 | Merged interchange + naming convention into single spec |
 | v1.1 | Draft | February 2026 | `content_authoring` task type |
 | v1.0 | Draft | December 2025 | Initial specification |
 
-**[→ Read the full v2.2 specification](spec/AIX-v2.2.md)**
+**[→ Read the full specification](spec/AIX-Standard.md)**
 
 ---
 
-## What's in v2.2
+## What's New in 2.4
 
-- **Module Manifest Standard** — Formally ratifies the `{moduleType}Module_{moduleId}_{property}` hierarchy for the Unified Module Architecture (UMA) platform layer
-- **`format` replaces `documentType`** — `writingAgent_format_*` is now canonical; `writingAgent_documentType_*` is deprecated with a full migration guide
-- **Published Works registry** — 10 new fields for book chapters, sidebars, and long-form structured works
-- **UMA Platform canonical keys** — `umaModule_registry_manifest`, `umaModule_entitlement_status`, and more
-- **FutureSight Studio module keys** — `publishingModule_emailStudio_*` keys ratified
-- **Naming clarifications** — Slug/URL casing exception documented; schema version string format clarified; metadata JSON examples corrected to camelCase throughout
+- **One converged standard** — AIX Standard v2.2, the AIX 2.3 Canonical Registry Contract, and the UMA 3.0 Contract Meta-Framework's key families are physically inlined into this single document. One standard, one version, always — a shared version number across physically separate files was structurally what produced version divergence before this release.
+- **Module Manifest Standard** — promoted from a subsection to its own chapter (§5); manifest schema, and the `permissionScopes`-vs-canonical-registry-grant relationship stated explicitly for the first time (composable, not merged).
+- **Canonical Registry Contract** (§12, new) — scoped, capability-gated, auditable reads for canonical registries: capability, tier, lifetime, resource-scope, and obligations axes; the formal grant tuple; an audit contract; a cross-agent handoff contract.
+- **UMA 3.0 Primitive Contract Structure** (§13, new) — registers the sixteen-primitive registry, the fourteen-section contract shape, and the AIX key hierarchy for UI primitives (primitive, telemetry, billing, tier-gated-capability key families). Required subsection content is in the standard; the companion remains the source for the test-specification format (§7), deprecation procedure (§8.2), and implementation-specific monetization extensions and worked platform examples (§6).
+- **Newsletter Studio keys corrected** — `publishingModule_emailStudio_*` deprecated in favor of `publishingModule_newsletterStudio_*`, the form that actually derives from the module's `app_id` under the standard's own slug-to-camelCase rule; `htmlExport` ratified as a new key.
+- **Deprecation policy** (§7.8, new) — AIX's first formally stated deprecation policy.
 
 ---
 
@@ -85,13 +92,19 @@ publishingModule_emailStudio_studioJson
 
 | Section | What's There |
 | --- | --- |
-| [§2 Core Naming Principles](spec/AIX-v2.2.md#2-core-naming-principles) | camelCase, hierarchy, no abbreviations, six validation tests |
-| [§3 Persona Field Registry](spec/AIX-v2.2.md#3-persona-field-registry) | All persona fields with Schema.org or AIX extension designation |
-| [§4 Component & Agent Registry](spec/AIX-v2.2.md#4-component--agent-registry) | Registered components, behavioral modes, Soul Documents, module manifests |
-| [§5 Reserved Segment Vocabulary](spec/AIX-v2.2.md#5-reserved-segment-vocabulary) | Format identifiers, quality pass identifiers, property suffixes |
-| [§6 Canonical Key Reference](spec/AIX-v2.2.md#6-canonical-key-reference) | All ratified AIX keys + deprecated key registry |
-| [§7–8 Envelope & Task Schemas](spec/AIX-v2.2.md#7-aix-envelope--task-types) | Task types, metadata, error object, per-task input/output schemas |
-| [§9 Workflows & Chaining](spec/AIX-v2.2.md#9-workflows--chaining) | Multi-step pipeline with variable substitution |
+| [§2 Core Naming Principles](spec/AIX-Standard.md#2-core-naming-principles) | camelCase, hierarchy, no abbreviations, six validation tests |
+| [§3 Persona Field Registry](spec/AIX-Standard.md#3-persona-field-registry) | All persona fields with Schema.org or AIX extension designation |
+| [§4 Component & Agent Registry](spec/AIX-Standard.md#4-component--agent-registry) | Registered components, behavioral modes, Soul Documents, module manifests |
+| [§5 Module Manifest Standard](spec/AIX-Standard.md#5-module-manifest-standard) | Module key hierarchy, manifest schema, `permissionScopes`-vs-registry-grant relationship |
+| [§6 Reserved Segment Vocabulary](spec/AIX-Standard.md#6-reserved-segment-vocabulary) | Format identifiers, quality pass identifiers, property suffixes |
+| [§7 Canonical Key Reference](spec/AIX-Standard.md#7-canonical-key-reference) | All ratified AIX keys, UMA primitive/telemetry/billing keys, deprecation policy |
+| [§8 AIX Envelope & Task Types](spec/AIX-Standard.md#8-aix-envelope--task-types) | Interchange format, task schema, metadata |
+| [§9 Task-Specific Schemas](spec/AIX-Standard.md#9-task-specific-schemas) | Per-task input/output schemas — voice, image, text, video, code, `content_authoring` |
+| [§10 Workflows & Chaining](spec/AIX-Standard.md#10-workflows--chaining) | Multi-step pipeline with variable substitution |
+| [§11 Provider Comparison Format](spec/AIX-Standard.md#11-provider-comparison-format) | Side-by-side output schema across providers |
+| [§12 Canonical Registry Contract](spec/AIX-Standard.md#12-canonical-registry-contract) | Scoped, capability-gated, auditable reads for canonical registries |
+| [§13 UMA 3.0 Primitive Contract Structure](spec/AIX-Standard.md#13-uma-30-primitive-contract-structure) | Primitive registry, fourteen-section contract structure, AIX key hierarchy for UI primitives |
+| [§14 Security & Governance](spec/AIX-Standard.md#14-security--governance) | Auth, safety, versioning, amendment process |
 
 ---
 
@@ -109,9 +122,9 @@ publishingModule_emailStudio_studioJson
 ## Contributing
 
 1. Open an issue describing the new key, field, or feature
-2. Run the [six naming validation tests](spec/AIX-v2.2.md#26-naming-validation-tests) against any proposed keys
-3. Submit a pull request with changes to the relevant spec file
-4. Keys are ratified in the next minor version per the [amendment process](spec/AIX-v2.2.md#113-amendment-process)
+2. Run the [six naming validation tests](spec/AIX-Standard.md#26-naming-validation-tests) against any proposed keys
+3. Submit a pull request with changes to the spec file
+4. Keys are ratified in the next minor version per the [amendment process](spec/AIX-Standard.md#143-amendment-process)
 
 Retroactive changes to ratified keys are prohibited. Deprecation is handled by adding a replacement key and marking the old key `[DEPRECATED]` — not by renaming it.
 
