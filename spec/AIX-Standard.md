@@ -27,7 +27,7 @@
 | 10. Workflows & Chaining | Multi-step pipeline schema |
 | 11. Provider Comparison Format | Side-by-side output schema |
 | 12. Canonical Registry Contract | Scoped, capability-gated, auditable reads for canonical registries |
-| 13. UMA 3.0 Primitive Contract Structure | Primitive registry, ten-section contract structure, AIX key hierarchy for UI primitives |
+| 13. UMA 3.0 Primitive Contract Structure | Primitive registry, fourteen-section contract structure, AIX key hierarchy for UI primitives |
 | 14. Security & Governance | Auth, safety, versioning, amendment process |
 | 15. Appendix | Provider list, language codes, media types, implementation notes |
 | 16. Changelog | Version history |
@@ -1309,7 +1309,7 @@ Persona-extension to close this delta is its own future workstream, not this cha
 
 # 13. UMA 3.0 Primitive Contract Structure
 
-This chapter incorporates the ratified UMA 3.0 primitive registry, full contract structure, and AIX key families. The standalone [UMA 3.0 Contract Meta-Framework](companions/UMA-3.0-Contract-Meta-Framework.md) remains the maintained companion for implementation guidance, conformance-file formats, and UMA-specific evolution. AIX owns the normative requirements reproduced in this chapter; the companion retains the wider UMA implementation framework.
+This chapter incorporates the ratified UMA 3.0 primitive registry, full contract structure, and AIX key families. The standalone UMA 3.0 Contract Meta-Framework remains the maintained companion for implementation guidance, conformance-file formats, and UMA-specific evolution. It is maintained separately and is available on request. AIX owns the normative requirements reproduced in this chapter; the companion retains the wider UMA implementation framework.
 
 ## 13.1 Primitive Registry
 
@@ -1336,7 +1336,7 @@ Sixteen primitives are registered as of this chapter's ratification. **Fourteen 
 
 ## 13.2 Contract Structure
 
-Every UMA 3.0 primitive's AIX contract document must contain exactly these ten sections, in this order. A contract document that omits any section is not AIX-compliant. Combining sections is permitted only where explicitly noted below.
+Every UMA 3.0 primitive's AIX contract document must contain exactly these fourteen sections, in this order. A contract document that omits any section is not AIX-compliant. Combining sections is permitted only where explicitly noted below.
 
 The following requirements codify the contract structure already exercised by the UMA primitive library. They govern every new primitive contract, while earlier component-API contracts adopt the structure as their consumers validate the applicable requirements.
 
@@ -1348,7 +1348,7 @@ Four elements are universal across primitive categories: a **header** declaring 
 
 **Rendering primitives** author their own v1 sections independently — `categoryicon.md` was the first rendering-primitive contract and established the pattern (viewBox normalization, token contracts) that a second rendering primitive would validate the same way.
 
-**Component-API primitives** (the majority of §2's table — `confirmModal`, `toast`, `backButton`, and the ten others) predate this skeleton entirely (PR #75-#84, before PR #101's ratification) and were never retrofitted to it as a formal action. Per `system-architecture.md`'s own account, carried forward here rather than restated: *"they conform to the skeleton retroactively as their consumers ratify, through consumer validation rather than a bulk rewrite."* Their §13.2.5-§13.2.14 sections read as ten flat, equally-weighted sections (this document's own original v1.0.1 shape) rather than skeleton-plus-tier — both shapes are valid AIX 2.2/2.4 contracts; the skeleton concept only started governing *new* contracts from PR #101 forward.
+**Component-API primitives** (the majority of §2's table — `confirmModal`, `toast`, `backButton`, and the ten others) predate this skeleton entirely (PR #75-#84, before PR #101's ratification) and were never retrofitted to it as a formal action. Per `system-architecture.md`'s own account, carried forward here rather than restated: *"they conform to the skeleton retroactively as their consumers ratify, through consumer validation rather than a bulk rewrite."* Their contracts treat the content requirements in §13.2.5-§13.2.14 as a flat, equally-weighted block within the fourteen-section structure (this document's own original v1.0.1 shape) rather than skeleton-plus-tier — both shapes are valid AIX 2.2/2.4 contracts; the skeleton concept only started governing *new* contracts from PR #101 forward.
 
 ### 13.2.2 Three-tier section split
 
@@ -1846,7 +1846,8 @@ Minor version, structural: converges what had become three separately-versioned 
 | Chapter 5 (UPDATED) | `permissionScopes`-vs-canonical-registry-grant relationship stated explicitly for the first time: composable, not merged — a flat string list vs. a full grant tuple, with both registration-time and dispatch-time failure modes specified (§5.2.1). |
 | Chapter 7 (UPDATED) | `umaModule_usage_event` marked `[DEPRECATED]` in favor of `umaModule_telemetry_usageEvent_*`; `umaModule_billing_ref` unchanged — the asymmetry is deliberate. New §7.6 registers UMA 3.0's primitive/telemetry/billing/tier-gated-capability key families. New §7.8 Deprecation Policy — AIX's first stated deprecation policy, sized to this one deprecation. |
 | Chapter 12 (NEW) | Canonical Registry Contract — physically inlines what was ratified separately as AIX 2.3 (2026-08-02). Its own "Relationship to AIX 2.2" section is retired entirely; §2's "Grounding" paragraph (which asserted a merged-vocabulary model chapter 5 explicitly rejects) is rewritten to match chapter 5's composable relationship. |
-| Chapter 13 (NEW) | UMA 3.0 Primitive Contract Structure — registers the full, now-current meta-framework: the sixteen-primitive registry, the ten-section contract structure (including the canonical skeleton, three-tier section split, and Experimental → Stable graduation path), and the four UMA key families. Supersedes the earlier narrower recommendation to register only the key families; the maintained companion now provides the complete and internally consistent framework incorporated here. |
+| Chapter 13 (NEW) | UMA 3.0 Primitive Contract Structure — registers the full, now-current meta-framework: the sixteen-primitive registry, the fourteen-section contract structure (including the canonical skeleton, three-tier section split, and Experimental → Stable graduation path), and the four UMA key families. Supersedes the earlier narrower recommendation to register only the key families; the maintained companion now provides the complete and internally consistent framework incorporated here. |
+| Chapter 13 structural count (CORRECTED) | The contract structure comprises fourteen subsections, §13.2.1-§13.2.14. Earlier descriptions understated the count and are corrected; no normative contract requirement changes. |
 | Chapter 15 (UPDATED) | AIX 2.3’s relationship-to-implementation sections are folded into Appendix E.4 and E.5 as non-normative implementation notes. Its design-question answers, verification log, and authoring report are not carried into the normative standard; the immutable historical release preserves that record. |
 | Chapter 16 (UPDATED) | This entry. The Version 2.3 entry below is kept verbatim per changelog-integrity discipline — a changelog is a historical record and rewriting it erases what was actually ratified — with a bracketed note marking its two-coexisting-standards framing as retired. |
 | Chapter 5/7 (UPDATED) | The publishing module's product name is retired — it is now Ubertrends' Newsletter Studio, the same way "Orchestra" was dropped from Solo Trillion's own name. Chapter 5's manifest example and chapter 7.5's section title/prose updated; §3.5's two media-collection examples update `mediumBrand` to `"Ubertrends"`. **The ratified keys themselves are now affected — see the deprecation row below; this row's own original claim that they were not has been superseded, not silently left standing.** The Version 2.2 entry below is kept verbatim per the same changelog-integrity discipline, with a bracketed note marking the retirement. |
