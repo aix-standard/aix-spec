@@ -1,0 +1,12 @@
+{
+  "standard": "AIX — AI Interchange Standard",
+  "version": "2.4",
+  "released": "August 2026",
+  "releasedISO": "2026-08",
+  "license": "Apache 2.0 (Open Standard)",
+  "author": "Michael Tchong, Ubertrends LLC",
+  "bundleId": "f429f7349c856a2c751b75cb811d74c2",
+  "formatVersion": 1,
+  "canonicalSha256": "264065a4d7aee8d728d9d66f83a115f59c6b99ca4f1cc65d265730189dd9c873",
+  "derivedFrom": "7b65491d657da9fb52fcc6f532a54136c0a133fb12ba09c266c08b28c953fd70"
+}

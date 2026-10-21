@@ -27,7 +27,7 @@
 | 10. Workflows & Chaining | Multi-step pipeline schema |
 | 11. Provider Comparison Format | Side-by-side output schema |
 | 12. Canonical Registry Contract | Scoped, capability-gated, auditable reads for canonical registries |
-| 13. UMA 3.0 Primitive Contract Structure | Primitive registry, fourteen-section contract structure, AIX key hierarchy for UI primitives |
+| 13. UMA 3.0 Primitive Contract Structure | Primitive registry; contract structure in fourteen numbered subsections, ten of them the sections every contract must carry; AIX key hierarchy for UI primitives |
 | 14. Security & Governance | Auth, safety, versioning, amendment process |
 | 15. Appendix | Provider list, language codes, media types, implementation notes |
 | 16. Changelog | Version history |
@@ -121,6 +121,8 @@ For persona data and interchange fields, AIX uses Schema.org canonical property 
 | AIX extensions | telephoneMobile, emailBusiness, linkedinUrl, twitterUrl | Only when Schema.org has no equivalent |
 | AIX hierarchy keys | writingAgent_format_default_systemPrompt | Four-part camelCase hierarchy for agent/config keys |
 
+> **Amended 2026-10-20.** `taxId` (§3.4) is the Schema.org property `taxID` written in this standard's camelCase form, with `id` registered at §2.4; the property name is otherwise used as-is.
+
 ## 2.4 No Abbreviations
 
 All segments use full English words. The only exceptions are established industry acronyms registered in the AIX permitted acronym list.
@@ -134,9 +136,9 @@ All segments use full English words. The only exceptions are established industr
 | qPass | qualityPass |
 | ra | researchAgent |
 
-Permitted acronyms: `aix`, `api`, `url`, `html`, `json`, `uuid`, `naics`, `rss`, `uma`
+Permitted acronyms: `aix`, `api`, `url`, `html`, `json`, `uuid`, `naics`, `rss`, `uma`, `id`
 
-> `rss` added 2026-05-12. RSS (Really Simple Syndication / RDF Site Summary) has been the W3C-canonical name for the format since 2002. `uma` added 2026-05-09. UMA (Unified Module Architecture) is the registered module platform layer in the AIX ecosystem.
+> `id` added 2026-10-20. `id` is an abbreviation of "identifier", not an acronym; it is registered here as a permitted exception under this section's No Abbreviations rule. Ratified keys have carried `Id` segments since v2.1: `mediumId` (§3.5), `requestId` (§8.3) and the manifest's `moduleId` (§5.2), and at 2.4 the §7.6 keys, including `{capabilityId}` and the telemetry and billing keys ending in `moduleId`, `primitiveId` or `sessionId`. The list now records that existing practice. `rss` added 2026-05-12. RSS (Really Simple Syndication / RDF Site Summary) has been the W3C-canonical name for the format since 2002. `uma` added 2026-05-09. UMA (Unified Module Architecture) is the registered module platform layer in the AIX ecosystem.
 
 ## 2.5 Identifier Names the Format — Properties Define It
 
@@ -169,6 +171,8 @@ Before any new key is ratified, it must pass all six tests. A key that fails any
 # 3. Persona Field Registry
 
 The Persona Field Registry defines every field in the AIX identity vault. Each field is either a Schema.org canonical property (used as-is) or an AIX extension (defined because Schema.org has no equivalent). This registry is the authoritative source for all Persona Vault implementations.
+
+> **Implementations (amended 2026-10-20).** The tables in this chapter are the normative registry. An implementation may keep its own project field-key list; that list conforms to this chapter.
 
 > Schema.org canonical fields are used as-is. AIX extension fields are marked 'AIX extension' in the Source column. The field key is the bare name — e.g., `linkedinUrl`, not `aix:linkedinUrl`.
 
@@ -216,6 +220,10 @@ These fields describe the author's organization or business entity. They use Sch
 
 ## 3.4 Financial & Legal
 
+> **Amended 2026-10-20.** `bankName` and `businessReferences` are ratified, and `bank` and `references` are deprecated in their favor (§7.7, §7.8); `taxId` (Schema.org `taxID`) is ratified. All three are tier private in the reference implementation. Each passed the five §2.6 tests that apply: Stranger, Abbreviation, Case, Redundancy and Conflict (`bankName` and `businessReferences` replace keys deprecated in their favor, and `taxId` is distinct from `taxCategory`). Hierarchy does not apply to a bare persona field key (§2.3). `taxId` passes Abbreviation with `id` registered at §2.4.
+>
+> Two implementation matters are recorded here, not ratified. The reference implementation stores the legal entity name under a non-conformant key, `organizationName`, alongside the conformant `legalName`; it is not ratified, because it duplicates `legalName` (§2.6 test 6), and the implementation will resolve it. The reference implementation also stores three bank-detail keys for invoicing, `bankAddress`, `routingNumber` and `accountNumber`, which are pending ratification and not registered: `bankAddress` departs from the Disambiguation Pattern below, `routingNumber` names a jurisdiction-specific code, and `accountNumber` does not say from its name alone that it is a bank account (§2.6 test 1). Conformant names are to be settled before they are registered.
+
 | AIX Field Key | Source | Description |
 | --- | --- | --- |
 | legalName | Schema.org | Legal entity name (also in Organization — shared field) |
@@ -225,8 +233,11 @@ These fields describe the author's organization or business entity. They use Sch
 | taxCategory | AIX extension | Tax classification (e.g., Disregarded Entity, S-Corp) |
 | addressBusiness | AIX extension | Full business mailing address |
 | addressHome | AIX extension | Home or personal display location |
-| bank | AIX extension | Primary banking institution name |
-| references | AIX extension | Professional references (names, titles, contact info) |
+| bank | AIX extension | `[DEPRECATED, 2.4]` Primary banking institution name. Deprecated in favor of `bankName`; see §7.7. |
+| references | AIX extension | `[DEPRECATED, 2.4]` Professional references. Deprecated in favor of `businessReferences`; see §7.7. |
+| bankName | AIX extension | Primary banking institution name |
+| businessReferences | AIX extension | Professional references (names, titles, contact info) |
+| taxId | Schema.org (`taxID`) | Tax identifier of the organization |
 | telephoneBusiness | AIX extension | Business/office telephone number |
 | telephoneMobile | AIX extension | Mobile telephone number |
 
@@ -285,16 +296,16 @@ This resolution rule is normative. Any AIX-compliant Writing Agent must implemen
 "media": [
   {
     "mediumType": "newsletter",
-    "mediumName": "Ubertrends",
-    "mediumBrand": "Ubertrends",
-    "mediumTagline": "America's Most Influential Trend Spotter",
-    "mediumUrl": "https://ubertrends.com",
+    "mediumName": "Example Weekly",
+    "mediumBrand": "Example Media",
+    "mediumTagline": "A fictional newsletter for illustration",
+    "mediumUrl": "https://example.com",
     "isPrimary": true
   },
   {
     "mediumType": "platform",
-    "mediumName": "Solo Trillion",
-    "mediumUrl": "https://solotrillion.ai",
+    "mediumName": "Example Platform",
+    "mediumUrl": "https://platform.example.com",
     "isPrimary": false
   }
 ]
@@ -307,8 +318,8 @@ AIX v2.1 is purely additive. The non-canonical `{publication_name}` placeholder 
 
 | AIX Field Key | Source | Description | Format |
 | --- | --- | --- | --- |
-| linkedinUrl | AIX extension | LinkedIn profile URL | https://linkedin.com/in/handle |
-| twitterUrl | AIX extension | X/Twitter profile URL | https://x.com/handle |
+| linkedinUrl | AIX extension | LinkedIn profile URL | https://linkedin.example.com/in/handle |
+| twitterUrl | AIX extension | X/Twitter profile URL | https://x.example.com/handle |
 | facebookUrl | AIX extension | Facebook profile or page URL | https://facebook.com/handle |
 | instagramUrl | AIX extension | Instagram profile URL | https://instagram.com/handle |
 | youtubeUrl | AIX extension | YouTube channel URL | https://youtube.com/@handle |
@@ -498,7 +509,7 @@ A module's `permissionScopes` (§5.2) declares its access needs at registration 
 
 `permissionScopes` is coarser than a registry grant not because its own vocabulary happens to look different — a `permissionScopes` entry (`"persona:read"`) and a chapter-12 capability string (`"records:read"`) are both bare `{namespace-or-domain}:{verb}` strings, same shape — but because `permissionScopes` structurally *cannot* carry tier, lifetime, resource-scope, or obligations. Two grants can carry the identical capability string and differ in every other respect; `permissionScopes` has no way to express that difference. A manifest's `permissionScopes` entry is a registration-time statement of intent; a chapter-12 grant is the runtime credential that intent is checked against.
 
-> **UMA 3.0 UI Primitive Contract Structure:** §5 defines module-level manifests. For UI primitive contracts — the shared components consumed by modules — see chapter 13, which formally registers the full UMA 3.0 contract structure and its own key families (`umaModule_primitive_*`, `umaModule_telemetry_usageEvent_*`, `umaModule_billing_transactionEvent_*`, `umaModule_tier_capability_*`). This is no longer a forward-pointer to a future minor version, since that minor version is this document.
+> **UMA 3.0 UI Primitive Contract Structure:** §5 defines module-level manifests. For UI primitive contracts — the shared components consumed by modules — see chapter 13, which registers the full UMA 3.0 contract structure and its own key families (`umaModule_primitive_*`, `umaModule_telemetry_usageEvent_*`, `umaModule_billing_transactionEvent_*`, `umaModule_tier_capability_*`). These keys are formally registered in chapter 13 (UMA 3.0 Primitive Contract Structure) — no longer a forward-pointer to a future minor version, since that minor version is this document.
 
 ---
 
@@ -730,6 +741,8 @@ Registered by chapter 13's UMA 3.0 contract structure. These keys extend the `um
 | publishingModule_emailStudio_deliveryTarget | publishingModule_newsletterStudio_deliveryTarget | 2.4 |
 | publishingModule_emailStudio_issueSubject | publishingModule_newsletterStudio_issueSubject | 2.4 |
 | publishingModule_emailStudio_issueDate | publishingModule_newsletterStudio_issueDate | 2.4 |
+| bank (persona field, §3.4) | bankName | 2.4 (2026-10-20) |
+| references (persona field, §3.4) | businessReferences | 2.4 (2026-10-20) |
 
 ## 7.8 Deprecation Policy (new at 2.4)
 
@@ -834,10 +847,10 @@ The `content_authoring` task type enables AI-generated content carrying full aut
   "jobTitle": "Founder, Solo Trillion",
   "bio": "Short author bio for attribution",
   "socialProfiles": {
-    "linkedinUrl": "https://linkedin.com/in/michaeltchong",
-    "twitterUrl":  "https://x.com/michaeltchong",
-    "youtubeUrl":  "https://youtube.com/@michaeltchong",
-    "url":         "https://ubertrends.com"
+    "linkedinUrl": "https://linkedin.example.com/in/example-author",
+    "twitterUrl":  "https://x.example.com/example-author",
+    "youtubeUrl":  "https://youtube.example.com/@example-author",
+    "url":         "https://example.com"
   },
   "media": [
     {
@@ -1044,15 +1057,15 @@ AIX supports chaining multiple tasks. The output of one step becomes the input o
 
 # 12. Canonical Registry Contract
 
-This chapter defines an open-standard contract for how canonical registries expose scoped, capability-gated, auditable reads to agents. It was originally ratified as a separate document, AIX 2.3 (2026-08-02), framed at the time as a separate, coexisting standard alongside what was then AIX 2.2. That framing is retired at 2.4 — there is no sibling; this is one standard, and this chapter physically inlines what was AIX 2.3's contract text. STO's Persona serves as a **partial** reference implementation (§12.12 for exactly what it does and doesn't yet demonstrate).
+This chapter defines an open-standard contract for how canonical registries expose scoped, capability-gated, auditable reads to agents. It was originally ratified as a separate document, AIX 2.3 (2026-08-02), framed at the time as a separate, coexisting standard alongside what was then AIX 2.2. That framing is retired at 2.4 — there is no sibling; this is one standard, and this chapter carries what was AIX 2.3's contract text, physically inlined here. STO's Persona serves as a **partial** reference implementation (§12.12 for exactly what it does and doesn't yet demonstrate).
 
 **Scope exclusions, carried forward unchanged:** this chapter does NOT design Persona-Editorial's content itself (Stage-1-track work, see §12.2.2/§12.12). Does NOT design any domain namespace's content (Trademark schema, Investment schema, Health schema — separate future workstreams). Does NOT redesign block-first refactor Stage 1 (already ratified — this chapter conforms to it, doesn't override it). Does NOT design the `aix-standard.org` public-publication process.
 
 ## 12.1 Overview and Positioning
 
-AIX generalizes a pattern already latent, but never made explicit, in this codebase: a **canonical registry** — a scoped, versioned, single-source-of-truth store that agents read from at dispatch time rather than caching or pinning locally. The motivating failure modes (per-agent pinning drift, per-file library divergence, disputes over which copy of a "canonical" fact is authoritative) are exactly the shape of defect this codebase has produced independently at least three times: the press-release dispatch bug (format-key drift across five enumeration surfaces), the block-first architecture refactor's verification finding that `writing_system_prompts`/`writing_output_rules` use `prompt_key`/`rules_key` names that do not mechanically derive from the canonical `format_key`, and Persona's own `ESSENTIALS_KEYS` drift (below).
+AIX generalizes a pattern already latent, but never made explicit, in this codebase: a **canonical registry** — a scoped, versioned, single-source-of-truth store that agents read from at dispatch time rather than caching or pinning locally. The motivating failure modes (per-agent pinning drift, per-file library divergence, disputes over which copy of a "canonical" fact is authoritative) are exactly the shape of defect this codebase has produced independently at least three times: the press-release dispatch bug (format-key drift across five enumeration surfaces), the block-first architecture refactor's own verification pass (`writing_system_prompts`/`writing_output_rules`'s `prompt_key`/`rules_key` naming, which doesn't mechanically derive from the canonical `format_key` at all), and Persona's own `ESSENTIALS_KEYS` drift (below).
 
-**A fourth instance, found during this contract's original verification pass:** Persona's backend service module defines a field-key constant, `ESSENTIALS_KEYS` (`solo-trillion-agents/persona/app/persona_agent.py:25-29`), using Schema.org-canonical names — `givenName`, `familyName`, `preferredName`, `jobTitle`, `legalName`, `industry`, `addressHome`, `telephoneMobile`, `timezone`, `emailBusiness` (10 fields). The frontend-facing schema documentation (`docs/persona-field-schema.md:13-14`) instead lists an "essentials" category using pre-rename names — `firstName`, `lastName`, `company` (9 fields) — even though `docs/aix/standard/AIX-Field-Key-Master-List.md:183` explicitly documents the rename this doc failed to pick up. Confirmed further at the migration layer: `migrations/20260328_aix_field_key_renames.sql:11-19` is the actual rename migration. This is not corrected in this chapter (out of scope — Persona's own documentation hygiene) but is cited deliberately: live, first-party evidence that even the reference implementation this chapter cites has already drifted internally.
+**A fourth instance, found during this contract's original verification pass:** Persona's backend service module defines a field-key constant, `ESSENTIALS_KEYS` (`solo-trillion-agents/persona/app/persona_agent.py:25-29`), using Schema.org-canonical names — `givenName`, `familyName`, `preferredName`, `jobTitle`, `legalName`, `industry`, `addressHome`, `telephoneMobile`, `timezone`, `emailBusiness` (10 fields). The frontend-facing schema documentation instead lists an "essentials" category using pre-rename names — `firstName`, `lastName`, `company` (9 fields) — even though the field-key master list explicitly documents the rename this doc failed to pick up. Confirmed further at the migration layer: `migrations/20260328_aix_field_key_renames.sql:11-19` is the actual rename migration. This is not corrected in this chapter (out of scope — Persona's own documentation hygiene) but is cited deliberately: live, first-party evidence that even the reference implementation this chapter cites has already drifted internally.
 
 **Reference implementation, precisely scoped (§12.12 for full detail):** STO's Persona (`app.solotrillion.ai/persona`) demonstrates the **tier axis** in production — a real, per-field, three-way classification (§12.4) — but does **not** currently demonstrate the capability axis, namespace/scope concept, grant lifetime, or resource-scoped grants this chapter specifies (§12.3, §12.5, §12.6, §12.9). Those are net-new design surface, using Persona's tier system as the closest existing analog, not as proof the full pattern already ships.
 
@@ -1064,7 +1077,7 @@ Spec authoring targets external adoption from the start: STO as reference implem
 
 **Gate on publication claims:** this chapter's text may publish now — the contract text doesn't need a running full-conformance system to exist first. But conformance CLAIMS, and specifically "Solo Trillion/Persona is THE reference implementation" language (unqualified), do NOT publish until a full-conformance reference actually exists somewhere in this codebase. Today, Persona satisfies only **incubation-profile** conformance (§12.12, Appendix E.5) — the shape is declared correctly, but handoff (§12.9), audit (§12.7), lifetime-expiry (§12.5), and denial paths aren't demonstrated end-to-end anywhere.
 
-**"Universal Markdown" comparison.** The same open-contract/reference-implementation growth model appears in the shipped Universal Markdown implementation: a canonical-writer-rules table implemented at `solo-trillion-relay/app/services/canvas_markdown_writer.py` and a public validator at `solotrillion.io`, framed as "the developer adoption trojan horse."
+**"Universal Markdown" comparison.** The same open-contract/reference-implementation growth shape this chapter follows appears in the shipped Universal Markdown implementation: a canonical-writer-rules table implemented at `solo-trillion-relay/app/services/canvas_markdown_writer.py`, and a public validator at `solotrillion.io`, framed as "the developer adoption trojan horse."
 
 ## 12.2 Canonical-Registry Namespace Definition
 
@@ -1117,13 +1130,13 @@ This chapter does not attempt to prove the four axes (capability, tier, lifetime
 
 ### 12.2.2 Persona-Editorial: Stage 1 addition
 
-Persona-Editorial is a Stage 1 addition, migrating whatever document currently governs Rosie's editorial content rules into Supabase namespace form, read by Rosie at dispatch time alongside `format_registry` (§12.2). The governing source spans 291 lines and 18 sections and states that it covers writing, formatting, verification, terminology, article structure, and content handoffs, matching this section's editorial-content-rules domain.
+Persona-Editorial is a Stage 1 addition, migrating whatever document currently governs Rosie's editorial content rules into Supabase namespace form, read by Rosie at dispatch time alongside `format_registry` (§12.2). The source document states in its own scope section that it "governs writing, formatting, verification, terminology, article structure, and content handoffs," matching this section's editorial-content-rules domain.
 
 **The retirement obligation, regardless of where the source document lives:** whatever currently governs Rosie's editorial content rules must be RETIRED in the same motion that lands the Persona-Editorial namespace — not left as parallel surface alongside the new namespace. Persona-Editorial's Stage 1 landing should carry its own acceptance criterion — "the source document is deleted or explicitly marked deprecated-and-empty in the same commit" — not merely "the namespace now also exists."
 
 ### 12.2.3 `dispatch-queue`: first namespace registered OPERATIONAL, not canonical-fact
 
-**What it is:** the pipeline MCP server’s dispatch-claim queue — row-per-work-item state (`workstream`, `stage`, `status`) that an internal agent pipeline claims and completes against.
+**What it is:** the pipeline MCP server's own dispatch-claim queue — row-per-dispatch state (`workstream`, `stage`, `status`) that the internal agent pipeline claims and completes against.
 
 **OPERATIONAL, not canonical-fact — capability and grant axes in force, version axis explicitly EXEMPT.** §12.2's own definition describes a namespace as a canonical store of ground facts an agent reads and trusts. `dispatch-queue` is a different kind of thing: mutable operational workflow state. The capability axis (§12.3) and grant-lifetime axis (§12.5) apply to `dispatch-queue` exactly as they do to any canonical-fact namespace. The version axis is the one that does not apply — there is no `version` column on `dispatches`, and none is owed: a `status` transition is not a fact revision needing a version history, it's the row doing its job.
 
@@ -1147,7 +1160,7 @@ Five namespace-specific capabilities (§12.3's own escape valve), not the templa
 
 **Conformance target: incubation-profile (§12.12), not full.** `dispatch-queue`'s v1 auth model runs over `stdio` with local trust — "who is this caller really" is NOT cryptographically enforced in v1; the relay trusts its own local process boundary rather than verifying per-agent identity. Full registry conformance is explicitly Phase 2/3 work for this namespace.
 
-**`dispatch-queue` is also the first OPERATIONAL namespace under this contract** — a genuine category distinction this chapter's own §12.2 definition did not previously draw. A future AIX version may formalize this distinction through a namespace-kind taxonomy; until then, this registration defines the distinction explicitly without generalizing it to other namespaces.
+**`dispatch-queue` is also the first OPERATIONAL namespace under this contract** — a genuine category distinction this chapter's own §12.2 definition did not previously draw. A future namespace-kind taxonomy amendment is where this distinction formally belongs; this entry is a registration-time workaround, not the permanent home for the taxonomy.
 
 ## 12.3 Capability Axis (orthogonal to tier)
 
@@ -1186,7 +1199,7 @@ function shouldIncludeField(fieldTier, filterTier) {
 }
 ```
 
-There is no fixed field count per tier anywhere in this codebase — tier is a per-row, user-editable value. Real, confirmed category totals: 50 fields across 7 categories (`docs/persona-field-schema.md:11-36`).
+There is no fixed field count per tier anywhere in this codebase — tier is a per-row, user-editable value.
 
 ## 12.5 Grant Lifetime (orthogonal to capability and tier)
 
@@ -1309,7 +1322,7 @@ Persona-extension to close this delta is its own future workstream, not this cha
 
 # 13. UMA 3.0 Primitive Contract Structure
 
-This chapter incorporates the ratified UMA 3.0 primitive registry, full contract structure, and AIX key families. The standalone UMA 3.0 Contract Meta-Framework remains the maintained companion for implementation guidance, conformance-file formats, and UMA-specific evolution. It is maintained separately and is available on request. AIX owns the normative requirements reproduced in this chapter; the companion retains the wider UMA implementation framework.
+This chapter carries the UMA 3.0 UI primitive contract structure in full — the sixteen-primitive registry, the four ratification preambles, the ten contract sections every primitive contract must contain, and the four UMA key families. The UMA 3.0 Contract Meta-Framework stays a maintained companion document; its §3 is the working text this chapter is derived from, and a divergence between the two is reconciled here at the next AIX minor version rather than left standing.
 
 ## 13.1 Primitive Registry
 
@@ -1336,19 +1349,19 @@ Sixteen primitives are registered as of this chapter's ratification. **Fourteen 
 
 ## 13.2 Contract Structure
 
-Every UMA 3.0 primitive's AIX contract document must contain exactly these fourteen sections, in this order. A contract document that omits any section is not AIX-compliant. Combining sections is permitted only where explicitly noted below.
+This section has **fourteen numbered subsections**. That number describes this chapter's own structure, not a contract requirement. §13.2.1 through §13.2.4 are ratification history — the four preambles under which the structure was ratified (PR #101–#103) — and §13.2.5 through §13.2.14 are the **ten sections every UMA 3.0 primitive's AIX contract document must contain, in this order**: Inputs, Outputs, Behaviors, Accessibility Commitments, Theming Surface, Context-Purity Audit, Monetization-Supporting Contracts, Reference Implementation, Conformance Test Suite, Versioning and Breaking Change Policy. A contract document that omits any of the ten is not AIX-compliant; combining sections is permitted only where explicitly noted below. A contract document does not carry §13.2.1–§13.2.4 as sections.
 
-The following requirements codify the contract structure already exercised by the UMA primitive library. They govern every new primitive contract, while earlier component-API contracts adopt the structure as their consumers validate the applicable requirements.
+These requirements codify the contract structure already exercised by the UMA primitive library. They govern every new primitive contract; earlier component-API contracts adopt the structure as their consumers validate the applicable requirements (§13.2.1).
 
 ### 13.2.1 The canonical skeleton
 
-Four elements are universal across primitive categories: a **header** declaring name, category, version, and status; **§13.2.12 Reference Implementation**; **§13.2.13 Conformance Test Suite**, backed by a machine-readable JSON file at `docs/aix/conformance/<primitive>.test.json`; and **§13.2.14 Versioning and Breaking Change Policy**. Test scenarios are split into `automated` assertions and `manual` procedures for human-validatable conditions such as touch velocity or visual gestalt.
+Four elements are universal: the header, §13.2.12, §13.2.13 and §13.2.14. Every primitive contract, regardless of category, must include them exactly as structured: the **Header** (name, category, version, status), **§13.2.12 Reference Implementation**, **§13.2.13 Conformance Test Suite** (a machine-readable JSON file at `docs/aix/conformance/<primitive>.test.json`, scenarios split into `automated` — asserted programmatically — and `manual` — human-validatable conditions like touch velocity or visual gestalt, each carrying a `procedure` field), and **§13.2.14 Versioning Policy**.
 
 **Behavioral primitives** additionally carry §13.2.5-§13.2.11 as a **v1-extensible** block — locked into the canonical skeleton only once a *second* behavioral primitive validates the same section shape. `dragdrop.md`'s own §13.2.5-§13.2.11 (interaction model, cursor contract, drop indicator, drag overlay, keyboard accessibility, screen-reader announcement, data transfer) are the first instance; they graduate into this skeleton when a second behavioral primitive validates and ratifies the same section shape, not before.
 
 **Rendering primitives** author their own v1 sections independently — `categoryicon.md` was the first rendering-primitive contract and established the pattern (viewBox normalization, token contracts) that a second rendering primitive would validate the same way.
 
-**Component-API primitives** (the majority of §2's table — `confirmModal`, `toast`, `backButton`, and the ten others) predate this skeleton entirely (PR #75-#84, before PR #101's ratification) and were never retrofitted to it as a formal action. Per `system-architecture.md`'s own account, carried forward here rather than restated: *"they conform to the skeleton retroactively as their consumers ratify, through consumer validation rather than a bulk rewrite."* Their contracts treat the content requirements in §13.2.5-§13.2.14 as a flat, equally-weighted block within the fourteen-section structure (this document's own original v1.0.1 shape) rather than skeleton-plus-tier — both shapes are valid AIX 2.2/2.4 contracts; the skeleton concept only started governing *new* contracts from PR #101 forward.
+**Component-API primitives** (the majority of §13.1's table — `confirmModal`, `toast`, `backButton`, and the ten others) predate this skeleton entirely (PR #75-#84, before PR #101's ratification) and were never retrofitted to it as a formal action; they conform to the skeleton retroactively as their consumers ratify, not as a single rewrite pass. Their §13.2.5-§13.2.14 sections read as ten flat, equally-weighted sections (the meta-framework's own original v1.0.1 shape) rather than skeleton-plus-tier — both shapes are valid AIX 2.2/2.4 contracts; the skeleton concept only started governing *new* contracts from PR #101 forward.
 
 ### 13.2.2 Three-tier section split
 
@@ -1360,19 +1373,19 @@ Every contract's own sections split into three tiers, stated explicitly rather t
 
 ### 13.2.3 Experimental → Stable Graduation Path
 
-When a primitive's `n=1` reference consumer doesn't exercise the full load-bearing API surface, its contract ships `experimental` (§2's table shows this is true of 14 of 16 primitives today) and graduates to `stable` at the merge that lands its **consumer #2**. `categoryIcon` is the first primitive to exercise this end-to-end: `experimental` at PR #102 (n=1, `NewsletterActionBar.jsx`), `stable` at PR #103 (consumer #2, `blockIcons.js`).
+When a primitive's `n=1` reference consumer doesn't exercise the full load-bearing API surface, its contract ships `experimental` (§13.1's table shows this is true of 14 of 16 primitives today) and graduates to `stable` at the merge that lands its **consumer #2**. `categoryIcon` is the first primitive to exercise this end-to-end: `experimental` at PR #102 (n=1, `NewsletterActionBar.jsx`), `stable` at PR #103 (consumer #2, `blockIcons.js`).
 
 **The graduation work lands in consumer #2's own PR, not a separate post-merge write, and decomposes into three commits whose atomicity matches the logical change:**
 
 1. **Migration commit** — consumer #2's own migration to the primitive. One logical change, one commit.
 2. **Atomic status-flip commit** — the AIX contract's `status` field AND the conformance JSON's own `status` field, `experimental` → `stable`, together, in one commit. Splitting these across two commits creates a self-inconsistent intermediate state (contract says stable, JSON still says experimental) that isn't a useful bisect target.
-3. **Version + tag commit** — a version bump (a status-flip is metadata, not an API-surface change — MICRO/4th-digit per `pipeline/CANON.md` §10 R10.3, PATCH in the older 3-digit convention this document's own §8 still uses) plus changelog plus a paired `git tag`, in the same commit, no deferred tagging.
+3. **Version + tag commit** — a version bump (a status-flip is metadata, not an API-surface change — MICRO/4th-digit, PATCH in the older 3-digit convention the meta-framework's own §8 still uses) plus changelog plus a paired `git tag`, in the same commit, no deferred tagging.
 
 `dragDrop` (PR #101) is the one exception: its `n=1` was comprehensive (drag + reorder + cancel + keyboard + a11y all exercised by the Newsletter Studio migration), so it ratified `stable` at merge with no graduation path needed. That is the exception, not the default — the default for a new first-of-kind primitive is to ship `experimental` and follow the three-commit pattern above when consumer #2 lands.
 
 ### 13.2.4 Contract Claims Must Match Contract Mechanism
 
-A contract claim of the shape "consumer is responsible for X" is only honest when the consumer actually has a mechanism to discharge that responsibility. When the primitive's own mechanism doesn't deliver what the claim promises, the claim is contract dishonesty — fixed by narrowing the claim or by adding the missing mechanism, never by shipping the gap silently. First surfaced at PR #101 (a portaled-token `:root`-scope claim the implementation didn't actually deliver) and generalized at PR #102. **This principle is why §2's table above states each `experimental` primitive's actual gaps by name rather than a bare status word** — a status field alone is a claim; the named deviations are the mechanism by which a reader can verify it.
+A contract claim of the shape "consumer is responsible for X" is only honest when the consumer actually has a mechanism to discharge that responsibility. When the primitive's own mechanism doesn't deliver what the claim promises, the claim is contract dishonesty — fixed by narrowing the claim or by adding the missing mechanism, never by shipping the gap silently. First surfaced at PR #101 (a portaled-token `:root`-scope claim the implementation didn't actually deliver) and generalized at PR #102. **This principle is why §13.1's table above states each `experimental` primitive's actual gaps by name rather than a bare status word** — a status field alone is a claim; the named deviations are the mechanism by which a reader can verify it.
 
 ---
 
@@ -1425,7 +1438,7 @@ Describes how the primitive behaves over time. Behaviors are normative — imple
 
 **Required content:**
 
-- **State transitions** — internal states the primitive owns, and what triggers transitions between them (e.g., `closed → open → confirmed | cancelled | dismissed`). A state transition diagram is recommended but not required.
+- **State transitions** — internal states the primitive owns, and what triggers transitions between them (e.g., `closed → open → confirmed | canceled | dismissed`). A state transition diagram is recommended but not required.
 - **Side effects** — every DOM mutation, focus management operation, scroll lock, localStorage read/write, or external API call the primitive performs. The list must be exhaustive — undocumented side effects are not permitted in AIX-compliant primitives.
 - **Lifecycle** — behavior on mount (initial state, initial focus placement), unmount (cleanup, restored state), and input changes (whether internal state resets or persists when inputs change)
 - **Concurrency** — behavior under rapid repeated input. Required to document: double-click on confirm, rapid open/close cycles, input changes mid-animation. For each: state what the primitive does. Do not document what it "should avoid." **Multi-instance coordination discipline:** when multiple instances of a primitive coexist on the same surface (e.g., three dropdowns in a row), the default assumption is that browser event ordering handles coordination — mousedown-close fires before click-open on a sibling trigger, so independent uncontrolled instances naturally enforce "only one open at a time" without SDK-level coordination state. Verify empirically before adding coordination logic to the primitive. Document the ordering behavior in §13.2.7 Concurrency when it is the mechanism of record (see `GlassDropdown` PR #79).
@@ -1482,13 +1495,13 @@ Describes the primitive's theming API — how consumers and host platforms contr
 
 These variables are the theming API surface. Consumers override these to brand the primitive. The STO glass aesthetic defines the defaults in `index.css`.
 
-**`className` prop (canonical surface-injection pattern):** For primitives that render a root container with visual identity (card surface, pill surface, modal surface), declare a `className` prop that the consumer supplies. The primitive applies it to the root container; the consumer controls the visual surface treatment. Example: `Accordion` accepts `className` — Newsletter passes `"glass-card glass-card--no-glow"`, Invoice Studio may pass a different surface class. This makes the theming rule concrete: **behavior in the primitive, visual identity injected by the consumer.** Do not hardcode STO glass class names inside the primitive. If the primitive has a reasonable default surface, it may use one — but the consumer must be able to override it without modifying the primitive.
+**`className` prop (canonical surface-injection pattern):** For primitives that render a root container with visual identity (card surface, pill surface, modal surface), declare a `className` prop that the consumer supplies. The primitive applies it to the root container; the consumer controls the visual surface treatment. Example: `Accordion` accepts `className` — Newsletter passes `"glass-card glass-card--no-glow"`, Invoice Studio may pass a different surface class. This is the theming-decoupled-from-behavior commitment made concrete: **behavior in the primitive, visual identity injected by the consumer.** Do not hardcode STO glass class names inside the primitive. If the primitive has a reasonable default surface, it may use one — but the consumer must be able to override it without modifying the primitive.
 
 **Theming slots** — named regions where consumers inject fully custom chrome. Example: a title slot that accepts any content, replacing the default `<h2>` rendering. If none, state "no theming slots."
 
 **Required vs. optional tokens** — which CSS variables must be defined for correct rendering (required) vs. which have acceptable built-in fallbacks (optional).
 
-**Design token approximation as Known Deviation:** When a primitive uses Tailwind utility classes (e.g., `text-green-400`) to approximate hand-tuned CSS values from a module-private implementation (e.g., `.vault-dot --tier` exact color), document the approximation as a Named Deviation in §13.2.12 and specify the promotion path: either (a) extract the exact values into shared design tokens and reference them in the primitive, or (b) accept the approximation as platform-level color discipline and close the deviation by policy. Do not silently ship approximations — they accumulate into inconsistency. `StatusDot` (PR #80) Known Deviation #1 documents this tradeoff for tier-role colors. The deviation closes when the Persona vault-dot colors are extracted into design tokens when the exact colors are promoted into shared design tokens.
+**Design token approximation as Known Deviation:** When a primitive uses Tailwind utility classes (e.g., `text-green-400`) to approximate hand-tuned CSS values from a module-private implementation (e.g., `.vault-dot --tier` exact color), document the approximation as a Named Deviation in §13.2.12 and specify the promotion path: either (a) extract the exact values into shared design tokens and reference them in the primitive, or (b) accept the approximation as platform-level color discipline and close the deviation by policy. Do not silently ship approximations — they accumulate into inconsistency. `StatusDot` (PR #80) Known Deviation #1 documents this tradeoff for tier-role colors. The deviation closes when the Persona vault-dot colors are extracted into shared design tokens.
 
 **Isolation guarantee** — confirmation that the primitive uses `!important` only where documented as a deliberate isolation requirement, with an explanatory comment in the CSS at the point of use. Undocumented `!important` overrides that would prevent consumer theming from applying are forbidden.
 
@@ -1520,7 +1533,7 @@ When a React import IS necessary, classify it by category. Three accepted except
 2. **A11y-necessity exceptions** — `FloatingInput.jsx` + `FloatingTextarea.jsx` (PR #82) import React's `useId` built-in to auto-generate stable IDs for `htmlFor`/`id` label-input linkage. Without `useId`, the burden shifts to every call site; consumers would need to manage IDs manually and could easily omit the association. `useId` is a React built-in (not STO-specific coupling), closes a real a11y gap (SR label/input association), and cannot be deferred to a prop without unacceptable consumer ergonomic cost. This is the reference proof point for the a11y-necessity exception class.
 3. **Chrome-namespace exceptions** — primitives in `uma/chrome/` are shell-coupled navigation/structural components by design. `BackButton.jsx` (PR #84) imports `react-router-dom` for `useNavigate` — permitted because navigation integration is the primitive's purpose and `chrome/` is explicitly scoped to shell-structural work. Context-purity audit still required; the chrome namespace widens what counts as "zero STO coupling" to include `react-router-dom` navigation hooks.
 
-**Verification note:** this section is a verification discipline artifact, not a design claim. Write it after reading the reference implementation, not before (§9).
+**Verification note:** this section is a verification discipline artifact, not a design claim. Write it after reading the reference implementation, not before (the UMA 3.0 Contract Meta-Framework §9).
 
 ---
 
@@ -1534,7 +1547,7 @@ Not every primitive requires all three sub-sections. The contract document expli
 
 For primitives that emit events usable for commission calculation:
 
-**`onUsage` callback input** — optional event handler the primitive invokes when a usage event occurs. The callback receives a `umaModule_telemetry_usageEvent_*` payload (§13.3.2 AIX keys). The host platform or module supplies this callback; the primitive fires it; the primitive does not implement billing logic.
+**`onUsage` callback input** — optional event handler the primitive invokes when a usage event occurs. The callback receives a `umaModule_telemetry_usageEvent_*` payload (§7.6 AIX keys). The host platform or module supplies this callback; the primitive fires it; the primitive does not implement billing logic.
 
 **Event types emitted** — controlled vocabulary of event type strings for this primitive. Example for `confirmModal`:
 
@@ -1550,7 +1563,7 @@ For primitives that emit events usable for commission calculation:
 
 For primitives that surface transaction events back to the host platform:
 
-**`onTransaction` callback input** — optional event handler for primitives that complete a billable action (e.g., a confirmation modal that gates a paid operation). The callback receives a `umaModule_billing_transactionEvent_*` payload (§13.3.3 AIX keys).
+**`onTransaction` callback input** — optional event handler for primitives that complete a billable action (e.g., a confirmation modal that gates a paid operation). The callback receives a `umaModule_billing_transactionEvent_*` payload (§7.6 AIX keys).
 
 **Transaction semantics** — description of when a transaction event fires and what it represents.
 
@@ -1595,7 +1608,7 @@ Names and describes the canonical React implementation.
 - **Implementation version** — semver string locked to the AIX contract version it implements (e.g., `1.0.0`)
 - **Export shape** — named export, default export, or hook function signature
 - **Test coverage** — pointer to test files; minimum requirements: unit tests covering §13.2.7 state transitions + integration tests covering §13.2.8 keyboard contract + context-purity verification (no STO context imports)
-- **Known deviations** — explicit list of any contract commitments the reference implementation does not yet honor, with tracking issue references. A conforming implementation has no entries in this table. An implementation with open deviations is labeled `experimental` in the registry (§4.2).
+- **Known deviations** — explicit list of any contract commitments the reference implementation does not yet honor, with tracking issue references. A conforming implementation has no entries in this table. An implementation with open deviations is labeled `experimental` in the registry (§13.1).
 
 > **Experimental-is-honest posture:** Every Phase 2 primitive has shipped `experimental` with documented deviations (accessibility gaps, missing automated tests, open behaviors). This is the correct SDK posture. Empirical migration coverage from same-PR consumer refactors substitutes for automated tests at v1.0.0 confidence. Shipping `experimental` honestly — with a documented promotion-to-stable gate — is more trustworthy to 3rd-party developers than claiming `stable` prematurely. The Known Deviations table is not a liability; it is the contract that says "here is exactly what we haven't finished."
 
@@ -1607,7 +1620,7 @@ A framework-agnostic test specification that any implementation (React, Vue, Sve
 
 **Required content:**
 
-- **Test specification document** — a JSON file at `docs/aix/conformance/{primitiveId}.test.json` following the format in the companion specification’s §7
+- **Test specification document** — a JSON file at `docs/aix/conformance/{primitiveId}.test.json` following the format in the UMA 3.0 Contract Meta-Framework §7
 - **Minimum coverage** — at least five `required` scenarios covering: ARIA role and attribute correctness, keyboard interaction contract (Escape key minimum), focus management (initial focus placement), context purity (no STO context imports), theming surface (CSS variable consumption)
 - **Pass/fail semantics** — a conforming implementation passes all `required` scenarios. Failing `recommended` scenarios are tracked but do not block AIX compliance certification.
 
@@ -1628,74 +1641,14 @@ States the primitive's current version and per-primitive definition of a breakin
   - Adding a new required input
   - Changing Escape key behavior from "invokes `onCancel`" to "does nothing"
   - Removing `aria-modal="true"` from the root element
-- **Deprecation procedure** — how deprecated inputs/behaviors are flagged (companion specification §8.2)
+- **Deprecation procedure** — how deprecated inputs/behaviors are flagged (the UMA 3.0 Contract Meta-Framework §8.2)
 - **Migration path requirements** — deprecated inputs or behaviors must include exact migration instructions
 
 ---
 
-Implementation-specific monetization extensions and worked platform examples remain in the companion specification’s §6. They are not added to AIX 2.4 as separate normative chapters.
-
 ## 13.3 AIX Key Hierarchy for UMA Primitives
 
-This section ratifies new canonical AIX keys for UMA 3.0 primitive telemetry, billing, and tier-gating. These keys extend the `umaModule_*` namespace registered in chapter 7 and travel at the UMA platform layer.
-
-All keys follow the §2.2 hierarchy: `{component}_{objectType}_{identifier}_{property}`. All pass the six validation tests from §2.6.
-
-### 13.3.1 Primitive Contract Keys
-
-| Canonical Key | Type | Ver | Description |
-|---|---|---|---|
-| `umaModule_primitive_{primitiveId}_contractVersion` | string | UMA-3.0 | Semver version of the AIX contract for this primitive (e.g., `"1.0.0"`) |
-| `umaModule_primitive_{primitiveId}_aixVersion` | string | UMA-3.0 | AIX standard version this contract targets (e.g., `"2.4"`) |
-| `umaModule_primitive_{primitiveId}_status` | string | UMA-3.0 | `stable` \| `experimental` \| `deprecated` |
-
-> **Key pattern note:** `{primitiveId}` is the registered primitive ID in camelCase (e.g., `confirmModal`, `blockHoverOverlay`). This yields a four-part hierarchy: `umaModule` (component) → `primitive` (objectType) → `{primitiveId}` (identifier) → `{property}` (property). Compliant with AIX §2.2.
-
-### 13.3.2 Telemetry Event Keys
-
-Shape of the `umaModule_telemetry_usageEvent_*` payload emitted by primitives via the `onUsage` callback (§13.2.11.1):
-
-| Canonical Key | Type | Ver | Description |
-|---|---|---|---|
-| `umaModule_telemetry_usageEvent_primitiveId` | string | UMA-3.0 | The primitive ID that fired the event (e.g., `"confirmModal"`) |
-| `umaModule_telemetry_usageEvent_eventType` | string | UMA-3.0 | Event type from the primitive's controlled vocabulary (e.g., `"confirm_activated"`) |
-| `umaModule_telemetry_usageEvent_moduleId` | string | UMA-3.0 | The `moduleId` of the host module (from the §5.2 module manifest) |
-| `umaModule_telemetry_usageEvent_timestamp` | string | UMA-3.0 | ISO-8601 timestamp of the event |
-| `umaModule_telemetry_usageEvent_sessionId` | string | UMA-3.0 | Host-supplied session identifier for event grouping |
-
-**Full telemetry event payload example:**
-
-```json
-{
-  "umaModule_telemetry_usageEvent_primitiveId": "confirmModal",
-  "umaModule_telemetry_usageEvent_eventType": "confirm_activated",
-  "umaModule_telemetry_usageEvent_moduleId": "newsletter-studio",
-  "umaModule_telemetry_usageEvent_timestamp": "2026-06-03T00:00:00Z",
-  "umaModule_telemetry_usageEvent_sessionId": "sess_abc123"
-}
-```
-
-### 13.3.3 Billing Transaction Event Keys
-
-Shape of the `umaModule_billing_transactionEvent_*` payload emitted by primitives via the `onTransaction` callback (§13.2.11.2). `umaModule_billing_ref` is a pre-existing AIX key retained at 2.4.
-
-| Canonical Key | Type | Ver | Description |
-|---|---|---|---|
-| `umaModule_billing_ref` | string | 2.2 | Billing reference ID — pre-existing AIX key retained at 2.4; listed here for completeness |
-| `umaModule_billing_transactionEvent_primitiveId` | string | UMA-3.0 | The primitive that surfaced the transaction |
-| `umaModule_billing_transactionEvent_moduleId` | string | UMA-3.0 | The host module |
-| `umaModule_billing_transactionEvent_tier` | string | UMA-3.0 | Subscription tier active at transaction time |
-| `umaModule_billing_transactionEvent_timestamp` | string | UMA-3.0 | ISO-8601 timestamp |
-
-### 13.3.4 Tier-Gated Capability Keys
-
-| Canonical Key | Type | Ver | Description |
-|---|---|---|---|
-| `umaModule_tier_capability_{primitiveId}_{capabilityId}` | boolean | UMA-3.0 | Whether capability `{capabilityId}` of primitive `{primitiveId}` is available at the current tier |
-
-**Example:** `umaModule_tier_capability_confirmModal_dangerousVariant` — whether the dangerous confirmation variant is accessible at the current subscription tier.
-
----
+Ratified in full at §7.6 of this document. Summarized here for chapter-local reference: `umaModule_primitive_{primitiveId}_*` (contract metadata: `contractVersion`, `aixVersion`, `status`), `umaModule_telemetry_usageEvent_*` (usage telemetry payload, fired via a primitive's `onUsage` callback), `umaModule_billing_transactionEvent_*` (billing transaction payload, fired via `onTransaction`), `umaModule_tier_capability_{primitiveId}_{capabilityId}` (tier-gated capability discovery). All follow §2.2 hierarchy and pass the six §2.6 validation tests.
 
 ---
 
@@ -1737,6 +1690,8 @@ To add a new key: (1) propose with full four-part hierarchy and plain-English de
 | Community Contributors | Pull requests, issues, and proposals |
 
 This is the external-standard governance model this project aspires to as AIX opens to outside implementers via `aix-standard.org`. It has not yet convened — no version through 2.4 has been ratified by a Technical Steering Committee or Provider Council.
+
+
 
 ---
 
@@ -1788,7 +1743,7 @@ This is the external-standard governance model this project aspires to as AIX op
 ## D. References
 
 1. Model Context Protocol (MCP) — https://github.com/modelcontextprotocol
-2. Eden AI APIs — https://github.com/edenai/edenai-apis
+2. Eden AI APIs — https://docs.edenai.co
 3. Schema.org — https://schema.org
 4. JSON Schema — https://json-schema.org
 5. BCP-47 Language Tags — https://www.rfc-editor.org/info/bcp47
@@ -1820,11 +1775,9 @@ Both key sets resolve identically during the transition. Remove deprecated keys 
 
 ### E.4 Relationship to Block-First Architecture Refactor
 
-Block-first's `format_registry` and `block_schemas` ARE canonical registries under chapter 12, per §12.2's namespace table. Stage 1 implementation should be authored with chapter 12 conformance in mind from the start.
+Block-first's `format_registry` and `block_schemas`, per §12.2's own namespace table, become canonical registries under chapter 12 once implemented — Stage 1 implementation should be authored with chapter 12 conformance in mind from the start.
 
 Persona-Editorial is in Stage 1 scope (§12.2.2) — authored on the separate Stage-1 implementation track, tracked here as a real cross-chapter dependency. The Rosie iPad conducting experience is compressed into Stage 1 — voice input as a first-class input mode, push-on-completion, background dispatch survival, and a streamed-artifact review mode, per §12.10's contract.
-
-Once implementation lands, its conformance verification should confirm that `format_registry`'s table shape satisfies at minimum §12.2's namespace-definition requirements, ideally the full §12.12 compliance checklist, and should identify chapter 12 as the governing contract.
 
 ### E.5 Relationship to Persona — Incubation-Profile Reference
 
@@ -1843,21 +1796,25 @@ Minor version, structural: converges what had become three separately-versioned 
 | Area | Change |
 | --- | --- |
 | Document structure (STRUCTURAL) | `AIX-Standard-v2.2.md` and `aix-2.3-canonical-registry-contract.md` retired as live files (redirect stubs in place); physically inlined here rather than cross-referenced — a shared version number across physically separate files was structurally what produced the divergence this version closes. |
+| Chapter 2 (UPDATED 2026-10-20) | `id` added to §2.4's permitted list as a registered abbreviation of "identifier" (a permitted exception under §2.4's No Abbreviations rule, not an acronym). Ratified keys have carried `Id` segments since v2.1 (`mediumId` §3.5, `requestId` §8.3, the manifest's `moduleId` §5.2), and §7.6's `{capabilityId}` and its telemetry and billing keys ending in `moduleId`, `primitiveId` or `sessionId` carry them too; this records that existing practice and changes no existing key. It newly permits keys such as `taxId`, which §2.6 test 3 (Abbreviation) would otherwise reject. No version bump, although §14.2's table would make this a Patch, or a Minor because it newly permits a key: additions to the permitted list are made in place as dated amendments, as at the 2026-05-12 `rss` addition and the 2026-09-12 chapter 13 row below, and this row follows that practice. |
+| Chapter 2 (UPDATED 2026-10-20, §2.3) | §2.3 notes that `taxId` (§3.4) is the Schema.org property `taxID` in this standard's camelCase form, with `id` registered at §2.4. No key changes. |
+| Chapter 3 (UPDATED 2026-10-20) | Chapter 3 states that its tables are the normative registry and that an implementation's own field-key list conforms to this chapter. §3.4 Financial & Legal ratifies `bankName` and `businessReferences`, deprecating `bank` and `references` in their favor (both remain in §3.4 marked `[DEPRECATED]`, with §7.7 entries, per §7.8 and §14.3), and ratifies `taxId` (Schema.org `taxID`), each after the §2.6 tests that apply. A dated note records two implementation matters without ratifying them: the non-conformant `organizationName`, which duplicates `legalName`, and three bank-detail keys pending ratification (`bankAddress`, `routingNumber`, `accountNumber`). No version bump: Michael ruled on 2026-10-20 to publish these as 2.4 with dated in-place amendments, a deliberate exception to the minor-version path §14.2 and §14.3 set for new keys. |
+| Corrections (FIXED 2026-10-20) | §13.2.1 said "five of the ten" contract sections are universal and named four elements, one of them the header, which is not one of the ten; it now says four elements are universal: the header, §13.2.12, §13.2.13 and §13.2.14. §12.4 dropped a persona field count that had gone stale. Examples were made fictional: §3.5's media example now uses invented names, tagline and example.com URLs in place of real ones; §3.6's LinkedIn and X format examples use example.com hosts, while its other format examples keep generic handles on the platforms' own hosts; §9.1's author example uses example.com hosts for its LinkedIn, X, YouTube and website URLs. |
 | Chapter 5 (UPDATED) | `permissionScopes`-vs-canonical-registry-grant relationship stated explicitly for the first time: composable, not merged — a flat string list vs. a full grant tuple, with both registration-time and dispatch-time failure modes specified (§5.2.1). |
 | Chapter 7 (UPDATED) | `umaModule_usage_event` marked `[DEPRECATED]` in favor of `umaModule_telemetry_usageEvent_*`; `umaModule_billing_ref` unchanged — the asymmetry is deliberate. New §7.6 registers UMA 3.0's primitive/telemetry/billing/tier-gated-capability key families. New §7.8 Deprecation Policy — AIX's first stated deprecation policy, sized to this one deprecation. |
 | Chapter 12 (NEW) | Canonical Registry Contract — physically inlines what was ratified separately as AIX 2.3 (2026-08-02). Its own "Relationship to AIX 2.2" section is retired entirely; §2's "Grounding" paragraph (which asserted a merged-vocabulary model chapter 5 explicitly rejects) is rewritten to match chapter 5's composable relationship. |
-| Chapter 13 (NEW) | UMA 3.0 Primitive Contract Structure — registers the full, now-current meta-framework: the sixteen-primitive registry, the fourteen-section contract structure (including the canonical skeleton, three-tier section split, and Experimental → Stable graduation path), and the four UMA key families. Supersedes the earlier narrower recommendation to register only the key families; the maintained companion now provides the complete and internally consistent framework incorporated here. |
-| Chapter 13 structural count (CORRECTED) | The contract structure comprises fourteen subsections, §13.2.1-§13.2.14. Earlier descriptions understated the count and are corrected; no normative contract requirement changes. |
-| Chapter 15 (UPDATED) | AIX 2.3’s relationship-to-implementation sections are folded into Appendix E.4 and E.5 as non-normative implementation notes. Its design-question answers, verification log, and authoring report are not carried into the normative standard; the immutable historical release preserves that record. |
+| Chapter 13 (NEW) | UMA 3.0 Primitive Contract Structure — registers the full, now-current meta-framework: the sixteen-primitive registry, the ten-section contract structure (including the canonical skeleton, three-tier section split, and Experimental → Stable graduation path), and the four UMA key families. Supersedes the narrower "register only the key families" recommendation an earlier authoring pass made. |
+| Chapter 13 (UPDATED 2026-09-12) | Chapter 13 now carries the UMA 3.0 Contract Meta-Framework's §3 in full as §13.2.1–§13.2.14 (four ratification preambles, then the ten contract sections, with §13.2.11's three monetization subsections) and the key summary moves from §13.4 to §13.3; the former §13.5 is absorbed by §13.2.11. The count is stated in both units, because a published copy had conflated them: fourteen numbered subsections in this chapter, ten sections a contract must contain. Cross-references at §7.6 (`§13.5.1`/`§13.5.2` → `§13.2.11.1`/`§13.2.11.2`) and §13.1 (`§13.3` → `§13.2.3`) follow. |
+| Chapter 15 (UPDATED) | 2.3's own §12 (Relationship to block-first architecture refactor) and §13 (Relationship to Persona) folded in as new Appendix E.4/E.5, non-normative implementation notes — the same treatment 2.2's own Appendix E already gives comparable material. 2.3's own §14 (design-question answers), §15 (verification log), and §16 (authoring report) are NOT carried forward — they are the ratification-process record of that document's own authoring pass. Not lost: `aix-2.3-canonical-registry-contract.md` is retained as a historical file (via git history), and this changelog entry plus the Version 2.3 entry below already summarize what was ratified. |
 | Chapter 16 (UPDATED) | This entry. The Version 2.3 entry below is kept verbatim per changelog-integrity discipline — a changelog is a historical record and rewriting it erases what was actually ratified — with a bracketed note marking its two-coexisting-standards framing as retired. |
 | Chapter 5/7 (UPDATED) | The publishing module's product name is retired — it is now Ubertrends' Newsletter Studio, the same way "Orchestra" was dropped from Solo Trillion's own name. Chapter 5's manifest example and chapter 7.5's section title/prose updated; §3.5's two media-collection examples update `mediumBrand` to `"Ubertrends"`. **The ratified keys themselves are now affected — see the deprecation row below; this row's own original claim that they were not has been superseded, not silently left standing.** The Version 2.2 entry below is kept verbatim per the same changelog-integrity discipline, with a bracketed note marking the retirement. |
-| Stale identifiers (FIXED) | §2.1's slug example, §5.1's worked example, §5.2's manifest example, and §5.2's slug-to-camelCase note all cited the retired publishing module's own dead `app_id` — the `module_registry` row was renamed to `newsletter-studio` in June 2026 by `20260612_rename_app_id_futuresight_to_newsletter_studio.sql`. All four updated to `newsletter-studio`. |
-| `publishingModule_emailStudio_*` deprecated, `publishingModule_newsletterStudio_*` ratified | The derivation gap the row above flagged is closed, not merely narrowed: §5.1/§5.2's own slug-to-camelCase rule now derives correctly (`newsletter-studio` → `newsletterStudio`), because the six `publishingModule_emailStudio_*` keys — which never derived correctly under either app_id — are deprecated in favor of six `publishingModule_newsletterStudio_*` keys that do. §7.5 carries the six new ratified rows; §7.7 carries the six deprecated rows, following the same shape as the existing `writingAgent_documentType_*` deprecations (fully superseded, not duplicated in their origin table). A repository-wide verification on 2026-08-15 confirmed zero implementation references to the deprecated keys before ratification; only documentation and one SQL seed contained them. **`publishingModule_emailStudio_htmlExport`, live in the newsletter-studio manifest but never ratified in any version of this standard, is deliberately not addressed by this deprecation** — addressed separately, below. |
-| `publishingModule_newsletterStudio_htmlExport` ratified | Seventh key in §7.5, closing the gap the row above named. Not a deprecation — `htmlExport` was never ratified under any prior name in any version of this standard, so §7.7 carries no corresponding row; a plain new ratification, per §7.5/§7.7's own explicit reasoning. Its description is written from the code that actually produces the value (`NewsletterActionBar.jsx`'s `exportHtml`, a client-side-only blob download), not from either live document that previously described it — those two disagreed with each other (one said no ESP send, one said delivery via ESP); the code settles it in the no-send direction. The maintained module-registry description was corrected to match on 2026-08-15 in commit `4b2920f`. |
-| Broken cross-references (FIXED) | Chapter 13’s telemetry and billing key citations now resolve to §13.2.11.1 and §13.2.11.2, the Usage Telemetry Hooks and Billing API Integration Points requirements. §12.1.1’s incubation-profile citation read `(§12.12, §12.12)` — a duplicated self-citation from flattening AIX 2.3’s two-target citation — and is corrected to `(§12.12, Appendix E.5)`. |
+| Stale identifiers (FIXED) | §2.1's slug example, §5.1's worked example, §5.2's manifest example, and §5.2's slug-to-camelCase note all cited the retired publishing module's own dead `app_id` — the `module_registry` row was renamed to `newsletter-studio` in June 2026 (`20260612_rename_app_id_futuresight_to_newsletter_studio.sql`). All four updated to `newsletter-studio`. |
+| `publishingModule_emailStudio_*` deprecated, `publishingModule_newsletterStudio_*` ratified | The derivation gap the row above flagged is closed, not merely narrowed: §5.1/§5.2's own slug-to-camelCase rule now derives correctly (`newsletter-studio` → `newsletterStudio`), because the six `publishingModule_emailStudio_*` keys — which never derived correctly under either app_id — are deprecated in favor of six `publishingModule_newsletterStudio_*` keys that do. §7.5 carries the six new ratified rows; §7.7 carries the six deprecated rows, following the same shape as the existing `writingAgent_documentType_*` deprecations (fully superseded, not duplicated in their origin table). A direct repository grep confirmed zero code references to the deprecated keys before this deprecation was ratified — documentation and one SQL seed only. **`publishingModule_emailStudio_htmlExport`, live in the newsletter-studio manifest but never ratified in any version of this standard, is deliberately not addressed by this deprecation** — addressed separately, below. |
+| `publishingModule_newsletterStudio_htmlExport` ratified | Seventh key in §7.5, closing the gap the row above named. Not a deprecation — `htmlExport` was never ratified under any prior name in any version of this standard, so §7.7 carries no corresponding row; a plain new ratification, per §7.5/§7.7's own explicit reasoning. Its description is written from the code that actually produces the value (`NewsletterActionBar.jsx`'s `exportHtml`, a client-side-only blob download), not from either live document that previously described it — those two disagreed with each other (one said no ESP send, one said delivery via ESP); the code settles it in the no-send direction. The maintained module-registry description was corrected to match on 2026-08-15. |
+| Broken cross-references (FIXED) | §13's own telemetry/billing key citations pointed at `§13.7.1`/`§13.7.2`, which did not exist (chapter 13 has no §13.6 or §13.7) — corrected to `§13.5.1`/`§13.5.2`, the actual Usage Telemetry Hooks / Billing API Integration Points sub-contracts, which were themselves promoted from bold paragraph leads to real headings so they resolve as addressable sections like every other numbered subsection in this document. §12.1.1's incubation-profile citation read `(§12.12, §12.12)` — a duplicated self-citation from flattening AIX 2.3's own two-target citation (its old §10 and §13) during convergence; corrected to `(§12.12, Appendix E.5)`, its actual two targets. |
 | Changelog numbering ambiguity (FIXED) | Entries for Version 2.3 and earlier cite section numbers from that version's own numbering at ratification time — several of those numbers (`§5.1`, `§5.2`, `§6.2`, `§7.3`, `§8.1`) now also exist as headings in this document but name different content, since Version 2.4 inserted and promoted chapters below chapter 4. A note added at the top of this chapter states this explicitly rather than leaving old citations to silently resolve against the wrong current section; no historical entry's own text was altered. |
-| External reference, resolved | §12.1.1’s public-validator citation, `solotrillion.io`, is correct — verified live (2026-08-14): it serves “Solo Trillion · Validate AI markdown before you ship,” exactly the validator §12.1.1 describes, while `solotrillion.ai` serves the app; both return HTTP 200, neither redirects. The current domain split is `.ai` for the app and Executive Briefings and `.io` for the standard and developer ecosystem. `.com` was sunsetted May 2026 and now redirects to `.ai` — a historical fact, not a currently-live surface. |
-| Internal contradiction (FIXED) | §7.5 labeled the camelCase key-hierarchy segments (`newsletterStudio`, `emailStudio`) as `moduleId: X`, contradicting §5.2's own rule that the manifest's `moduleId` field is dash-case and only the AIX hierarchy key's module-ID segment is camelCase. Verification confirmed that the live `module_registry` row was and is conformant (dash-case) — the prose was stale, not the data. Corrected to `module ID segment X`, matching §5.2's own terminology; the camelCase values themselves were unchanged, since they were correct in a key-hierarchy context. |
+| External reference, resolved | §12.1.1's public-validator citation, `solotrillion.io`, is correct — verified live (2026-08-14): it serves "Solo Trillion · Validate AI markdown before you ship," exactly the validator §12.1.1 describes, while `solotrillion.ai` serves the app; both return HTTP 200, neither redirects. The split is deliberate: `.ai` for the app and Executive Briefings, `.io` for the standard and developer ecosystem. `.com` was sunsetted May 2026 and now redirects to `.ai`. |
+| Internal contradiction (FIXED) | §7.5 labeled the camelCase key-hierarchy segments (`newsletterStudio`, `emailStudio`) as `moduleId: X`, contradicting §5.2's own rule that the manifest's `moduleId` field is dash-case and only the AIX hierarchy key's module-ID segment is camelCase. The live `module_registry` row was and is conformant (dash-case, re-verified live) — the prose was stale, not the data. Corrected to `module ID segment X`, matching §5.2's own terminology; the camelCase values themselves were unchanged, since they were correct in a key-hierarchy context. |
 
 ## Version 2.3 — August 2026
 
